@@ -7,6 +7,8 @@ import pandas as pd
 from validation.scenario_generator import generate_scenario
 from validation.scenario_generator import get_raw_data
 
+from examples.predictors.lstm.predict import main
+
 DATA_URL = "https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv"
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(ROOT_DIR, 'data')
@@ -100,29 +102,15 @@ def get_predictions(start_date_str, end_date_str, pres_df, countries=None):
     # Use full path of the local file passed as ip_file
     ip_file_full_path = os.path.abspath(TMP_PRESCRIPTION_FILE)
 
-    # Go to covid-xprize root dir to access predict script
-    wd = os.getcwd()
-    os.chdir("../../..")
-
     # Run script to generate predictions
-    output_str = subprocess.check_output(
-        [
-            'python', PREDICT_MODULE,
-            '--start_date', start_date_str,
-            '--end_date', end_date_str,
-            '--interventions_plan', ip_file_full_path,
-            '--output_file', TMP_PRED_FILE_NAME
-        ],
-        stderr=subprocess.STDOUT
-    )
-
-    # Print output from running script
-    print(output_str.decode("utf-8"))
+    main([
+        '--start_date', start_date_str,
+        '--end_date', end_date_str,
+        '--interventions_plan', ip_file_full_path,
+        '--output_file', TMP_PRED_FILE_NAME
+    ])
 
     # Load predictions to return
     df = pd.read_csv(TMP_PRED_FILE_NAME)
-
-    # Return to prescriptor dir
-    os.chdir(wd)
 
     return df

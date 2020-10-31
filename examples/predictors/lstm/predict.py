@@ -47,7 +47,8 @@ def predict(start_date: str,
 
 
 # !!! PLEASE DO NOT EDIT. THIS IS THE OFFICIAL COMPETITION API !!!
-if __name__ == '__main__':
+
+def main(args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--start_date",
                         dest="start_date",
@@ -69,7 +70,12 @@ if __name__ == '__main__':
                         type=str,
                         required=True,
                         help="The path to the CSV file where predictions should be written")
-    args = parser.parse_args()
+
+    args = parser.parse_args(args)
+
     print(f"Generating predictions from {args.start_date} to {args.end_date}...")
     predict(args.start_date, args.end_date, args.ip_file, args.output_file)
     print("Done!")
+
+if __name__ == '__main__':
+    main()
